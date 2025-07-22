@@ -3,269 +3,120 @@
 <head>
   <meta charset="UTF-8">
   <title>Invoice - Specialized Security</title>
+  <!-- External CSS file: styles.css -->
+  <link rel="stylesheet" href="styles.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 40px; background: #f9f9f9; }
-    h2 { text-align: center; margin-bottom: 5px; }
-    .subheader { text-align: center; font-size: 14px; color: #555; margin-bottom: 20px; }
-    .invoice-box { background: #fff; padding: 30px; border: 1px solid #ccc; max-width: 800px; margin: auto; }
-    .flex { display: flex; justify-content: space-between; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    table, th, td { border: 1px solid #ccc; }
-    th, td { padding: 10px; text-align: left; }
-    .total-row { font-weight: bold; }
-    button { margin-top: 20px; padding: 10px 20px; font-size: 16px; cursor: pointer; }
-    input, select { width: 100%; border: none; background: transparent; font-size: 14px; }
-    input:focus { outline: none; }
-    .error { border: 1px solid red !important; }
-    #currency { width: auto; background: #eee; border-radius: 4px; padding: 2px 8px; }
-  </style>
 </head>
 <body>
-
-<div class="invoice-box" id="invoice">
+<header>
   <h2>Invoice</h2>
   <div class="subheader">
     <span id="invoice-date"></span> • 
-    <span id="invoice-number" contenteditable="true"></span>
+    <span id="invoice-number" contenteditable="true" aria-label="Invoice Number"></span>
   </div>
-
-  <div class="flex">
-    <div>
-      <strong>From:</strong><br>
-        <input type="text" placeholder="Name as appears on bank statement" class="editable-input">
-        <input type="text" placeholder="Enter address line 1" class="editable-input">
-        <input type="text" placeholder="Enter city" class="editable-input">
-        <input type="text" placeholder="Enter postcode" class="editable-input">
-        <input type="text" placeholder="Enter phone number" class="editable-input">
-        <input type="email" placeholder="Enter your email address" class="editable-input">
-      </label>
-    </div>
-    <div>
-      <strong>To:</strong><br>
-      <input value="Specialized Security" readonly><br>
-      <input value="3 Lindsay Square" readonly><br>
-      <input value="Livingston" readonly><br>
-      <input value="EH54 8RL" readonly><br>
-      <input value="01506 249001" readonly><br>
-      <input value="military@specializedsecurity.co.uk" readonly><br>
-    </div>
-  </div>
-  <div style="margin-top: 30px;">
-    <strong>Bank Details:</strong><br><br>
-      <input type="text" placeholder="Your Bank Name" class="editable-input">
-      <input type="text" placeholder="Sort Code" class="editable-input" id="sort-code">
-      <input type="text" placeholder="Account Number" class="editable-input" id="account-number">
-    </label>
-  </div>
-  <div style="margin: 20px 0;">
-    <label for="currency"><strong>Currency:</strong></label>
-    <select id="currency" onchange="updateTotals()">
-      <option value="£">GBP (£)</option>
-      <option value="$">USD ($)</option>
-      <option value="€">EUR (€)</option>
-    </select>
-  </div>
-  <table id="invoice-table">
-    <thead>
-      <tr>
-        <th>Festival</th>
-        <th>Role</th>
-        <th>Hours</th>
-        <th>Rate</th>
-        <th>Amount</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody id="items">
-      <tr>
-        <td>
-<td>
-  <select onchange="handleOtherFestival(this)">
-    <option>GLASTONBURY</option>
-    <option>FINSBURY PARK</option>
-    <option>WIRELESS</option>
-    <option>LATTITUDE</option>
-    <option>READING</option>
-    <option>OTHER</option>  
-  </select>
-  <input type="text" class="other-festival" style="display:none; margin-top:5px;" placeholder="Please specify..." />
-</td>
-                <select name="role">
-          <option value="Steward">Steward</option>
-          <option value="SIA Steward">SIA Steward</option>
-          <option value="SIA Team Leader">SIA Team Leader</option>
+</header>
+<main>
+  <div class="invoice-box" id="invoice">
+    <form id="invoice-form" autocomplete="on">
+      <section class="flex" aria-label="Address Section">
+        <div>
+          <strong>From:</strong><br>
+          <label for="from-name">Name:</label>
+          <input type="text" id="from-name" placeholder="Name as appears on bank statement" required>
+          <label for="from-address">Address:</label>
+          <input type="text" id="from-address" placeholder="Enter address line 1" required>
+          <label for="from-city">City:</label>
+          <input type="text" id="from-city" placeholder="Enter city" required>
+          <label for="from-postcode">Postcode:</label>
+          <input type="text" id="from-postcode" placeholder="Enter postcode" required>
+          <label for="from-phone">Phone:</label>
+          <input type="tel" id="from-phone" placeholder="Enter phone number">
+          <label for="from-email">Email:</label>
+          <input type="email" id="from-email" placeholder="Enter your email address" required pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$">
+        </div>
+        <div>
+          <strong>To:</strong><br>
+          <input value="Specialized Security" readonly aria-label="To Name"><br>
+          <input value="3 Lindsay Square" readonly aria-label="To Address"><br>
+          <input value="Livingston" readonly aria-label="To City"><br>
+          <input value="EH54 8RL" readonly aria-label="To Postcode"><br>
+          <input value="01506 249001" readonly aria-label="To Phone"><br>
+          <input value="military@specializedsecurity.co.uk" readonly aria-label="To Email"><br>
+        </div>
+      </section>
+      <section style="margin-top: 30px;">
+        <strong>Bank Details:</strong><br><br>
+        <label for="bank-name">Bank Name:</label>
+        <input type="text" id="bank-name" placeholder="Your Bank Name" required>
+        <label for="sort-code">Sort Code:</label>
+        <input type="text" id="sort-code" placeholder="Sort Code (00-00-00)" required pattern="^\d{2}-\d{2}-\d{2}$">
+        <label for="account-number">Account Number:</label>
+        <input type="text" id="account-number" placeholder="Account Number (8 digits)" required pattern="^\d{8}$">
+      </section>
+      <section style="margin: 20px 0;">
+        <label for="currency"><strong>Currency:</strong></label>
+        <select id="currency" name="currency">
+          <option value="£">GBP (£)</option>
+          <option value="$">USD ($)</option>
+          <option value="€">EUR (€)</option>
         </select>
-        </td>
-        <td><input type="number" value="1" oninput="updateTotals()"></td>
-        <td><input type="number" value="100" oninput="updateTotals()"></td>
-        <td class="amount">100.00</td>
-        <td><button onclick="removeRow(this)">✖</button></td>
-      </tr>
-    </tbody>
-    <tfoot>
-      <tr class="total-row">
-        <td colspan="3">Total</td>
-        <td id="total">100.00</td>
-        <td></td>
-      </tr>
-    </tfoot>
-  </table>
+      </section>
+      <div style="overflow-x: auto;">
+        <table id="invoice-table">
+          <thead>
+            <tr>
+              <th>Festival</th>
+              <th>Role</th>
+              <th>Hours</th>
+              <th>Rate</th>
+              <th>Amount</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="items">
+            <tr>
+              <td>
+                <select class="festival-select">
+                  <option value="" disabled selected>Select Festival</option>
+                  <option>GLASTONBURY</option>
+                  <option>FINSBURY PARK</option>
+                  <option>WIRELESS</option>
+                  <option>LATTITUDE</option>
+                  <option>READING</option>
+                  <option>OTHER</option>
+                </select>
+                <input type="text" class="other-festival" style="display:none; margin-top:5px;" placeholder="Please specify..." />
+              </td>
+              <td>
+                <select name="role" class="role-select">
+                  <option value="Steward">Steward</option>
+                  <option value="SIA Steward">SIA Steward</option>
+                  <option value="SIA Team Leader">SIA Team Leader</option>
+                </select>
+              </td>
+              <td><input type="number" min="1" value="1" class="hours-input" required></td>
+              <td><input type="number" min="0" value="13.68" class="rate-input" required></td>
+              <td class="amount">13.68</td>
+              <td><button type="button" class="remove-row" aria-label="Remove row">✖</button></td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr class="total-row">
+              <td colspan="4">Total</td>
+              <td id="total">13.68</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <button type="button" id="add-item">+ Add Item</button>
+      <button type="button" id="download-pdf">Download PDF</button>
+      <span id="pdf-status" aria-live="polite"></span>
+    </form>
+  </div>
+</main>
 
-  <button onclick="addRow()">+ Add Item</button>
-  <button onclick="downloadPDF()">Download PDF</button>
-</div>
-function setRoleRate(row) {
-  const roleSelect = row.querySelector('select[name="role"]');
-  const rateInput = row.querySelector('td:nth-child(5) input');
-  if (!roleSelect || !rateInput) return;
-  switch (roleSelect.value) {
-    case 'Steward':
-      rateInput.value = 13.68;
-      break;
-    case 'SIA Steward':
-      rateInput.value = 14.50;
-      break;
-    case 'SIA Team Leader':
-      rateInput.value = 16.00;
-      break;
-    default:
-      rateInput.value = '';
-  }
-  updateTotals();
-}
-
-// Attach change event to all role selects on page load and when adding rows
-function attachRoleRateListeners() {
-  document.querySelectorAll('select[name="role"]').forEach(sel => {
-    sel.onchange = function() {
-      setRoleRate(sel.closest('tr'));
-    };
-  });
-}
-
-// Modify addRow to re-attach listeners
-const originalAddRow = addRow;
-addRow = function() {
-  originalAddRow();
-  attachRoleRateListeners();
-  // Also set the rate for the newly added row
-  const lastRow = document.querySelector('#items tr:last-child');
-  setRoleRate(lastRow);
-};
-
-// Attach listeners on page load
-attachRoleRateListeners();
-// Set rates for existing rows on page load
-document.querySelectorAll('#items tr').forEach(setRoleRate);
-<script>
-  function validateInputs() {
-    let valid = true;
-    // Email validation
-    const email = document.querySelector('input[type="email"]');
-    if (email.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
-      email.classList.add('error');
-      valid = false;
-    } else {
-      email.classList.remove('error');
-    }
-    // Sort code: 00-00-00
-    const sort = document.getElementById('sort-code');
-    if (sort.value && !/^\d{2}-\d{2}-\d{2}$/.test(sort.value)) {
-      sort.classList.add('error');
-      valid = false;
-    } else {
-      sort.classList.remove('error');
-    }
-    // Account number: 8 digits
-    const acc = document.getElementById('account-number');
-    if (acc.value && !/^\d{8}$/.test(acc.value)) {
-      acc.classList.add('error');
-      valid = false;
-    } else {
-      acc.classList.remove('error');
-    }
-    return valid;
-  }
-
-  function updateTotals() {
-    const rows = document.querySelectorAll('#items tr');
-    let total = 0;
-    const currency = document.getElementById('currency').value;
-    rows.forEach(row => {
-      const qty = row.cells[1].querySelector('input').valueAsNumber || 0;
-      const price = row.cells[2].querySelector('input').valueAsNumber || 0;
-      const amount = qty * price;
-      row.cells[3].innerText = currency + amount.toFixed(2);
-      total += amount;
-    });
-    document.getElementById('total').innerText = currency + total.toFixed(2);
-  }
-
-  function addRow() {
-    const tbody = document.getElementById('items');
-    const row = document.createElement('tr');
-    row.innerHTML = `
-<td>
-  <select onchange="handleOtherFestival(this)">
-    <option>GLASTONBURY</option>
-    <option>FINSBURY PARK</option>
-    <option>WIRELESS</option>
-    <option>LATTITUDE</option>
-    <option>READING</option>
-    <option>OTHER</option>  
-  </select>
-  <input type="text" class="other-festival" style="display:none; margin-top:5px;" placeholder="Please specify..." />
-</td>
-                <select name="role">
-          <option value="Steward">Steward</option>
-          <option value="SIA Steward">SIA Steward</option>
-          <option value="SIA Team Leader">SIA Team Leader</option>
-        </select>
-        </td>
-      <td><input type="number" value="1" oninput="updateTotals()"></td>
-      <td><input type="number" value="0" oninput="updateTotals()"></td>
-      <td class="amount">0.00</td>
-      <td><button onclick="removeRow(this)">✖</button></td>
-    `;
-    tbody.appendChild(row);
-    updateTotals();
-  }
-
-  function removeRow(btn) {
-    btn.closest('tr').remove();
-    updateTotals();
-  }
-
-  function downloadPDF() {
-    if (!validateInputs()) {
-      alert("Please correct highlighted fields before downloading the invoice.");
-      return;
-    }
-    const invoice = document.getElementById('invoice');
-    html2pdf().from(invoice).save('invoice.pdf');
-  }
-
-  function setDateAndInvoiceNumber() {
-    const dateEl = document.getElementById('invoice-date');
-    const numberEl = document.getElementById('invoice-number');
-    const today = new Date();
-
-    const formattedDate = today.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
-    dateEl.textContent = `Date: ${formattedDate}`;
-
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0');
-    const dd = String(today.getDate()).padStart(2, '0');
-    const invoiceNumber = `Invoice #: ${yyyy}${mm}${dd}-001`;
-
-    numberEl.textContent = invoiceNumber;
-  }
-
-  // Initial setup
-  setDateAndInvoiceNumber();
-  updateTotals();
-</script>
-
+<!-- External JS file: invoice.js -->
+<script src="invoice.js"></script>
 </body>
 </html>
