@@ -2,209 +2,119 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>SpecSec Invoice Generator</title>
+  <title>SpecSec Invoice</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f8f9fa;
-      padding: 30px;
-    }
-    .invoice-box {
-      max-width: 850px;
-      margin: auto;
-      background: white;
-      padding: 40px;
-      border: 1px solid #eee;
-      box-shadow: 0 0 10px rgba(0,0,0,.15);
-      color: #333;
-    }
-    h1, h2, h3 { margin: 0 0 10px; }
-    h1 { font-size: 26px; }
-    .header {
-      text-align: right;
-      margin-bottom: 30px;
-    }
-    .header small {
-      display: block;
-      font-size: 14px;
-      color: #777;
-    }
-    .section { margin-bottom: 30px; }
-    label {
-      display: block;
-      margin: 8px 0 3px;
-      font-weight: 600;
-    }
-    input, textarea {
-      width: 100%;
-      padding: 6px 10px;
-      font-size: 15px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-    table th {
-      background: #f0f0f0;
-      text-align: left;
-      padding: 8px;
-      border: 1px solid #ccc;
-    }
-    table td {
-      padding: 8px;
-      border: 1px solid #ccc;
-    }
-    .right { text-align: right; }
-    .totals {
-      text-align: right;
-      font-size: 18px;
-      font-weight: bold;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      margin-top: 20px;
-      cursor: pointer;
-      background: #333;
-      color: white;
-      border: none;
-      border-radius: 4px;
-    }
-    .footer {
-      font-size: 14px;
-      color: #666;
-      margin-top: 30px;
-    }
+    body { font-family: Arial, sans-serif; margin: 40px; max-width: 900px; }
+    .row { display: flex; justify-content: space-between; }
+    .column { flex: 1; padding: 10px; }
+    input, textarea { width: 100%; padding: 6px; margin-top: 4px; margin-bottom: 12px; font-size: 14px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #aaa; padding: 8px; text-align: left; }
+    button { margin-top: 20px; padding: 10px 15px; font-size: 16px; }
+    h2, h3 { margin-top: 0; }
   </style>
 </head>
 <body>
+  <h2>SpecSec Invoice</h2>
 
-<div class="invoice-box" id="invoice">
-  <div class="header">
-    <h1>Specialized Security</h1>
-    <small>3 Lindsay Square, Livingston, EH54 8RL</small>
-    <small>military@specializedsecurity.co.uk</small>
-    <small>01506 249001</small>
+  <div class="row">
+    <div class="column">
+      <label>Your Company Name</label>
+      <input id="companyName" value="NAME AS APPEARS ON BANK STATEMENT">
+      <input id="address1" value="ADDRESS LINE 1">
+      <input id="address2" value="ADDRESS LINE 2">
+      <input id="address3" value="ADDRESS LINE 3">
+      <input id="postcode" value="POST CODE">
+      <input id="phone" value="TELEPHONE NUMBER">
+      <input id="email" value="EMAIL ADDRESS">
+    </div>
+    <div class="column">
+      <label>Invoice #</label>
+      <input id="invoiceNumber" value="INV-001">
+      <label>Invoice Date</label>
+      <input id="invoiceDate" type="date" value="2025-07-22">
+    </div>
   </div>
 
-  <h2 style="text-align:center;">INVOICE</h2>
+  <h3>Billed To</h3>
+  <input id="clientName" value="Specialized Security">
+  <input id="clientAddress1" value="3 Lindsay Square">
+  <input id="clientAddress2" value="Livingston">
+  <input id="clientPostcode" value="EH54 8RL">
+  <input id="clientPhone" value="01506 249001">
+  <input id="clientEmail" value="military@specializedsecurity.co.uk">
 
-  <div class="section">
-    <h3>Client Information</h3>
-    <label>Client Name</label>
-    <input id="clientName" type="text" />
-    <label>Address Line 1</label>
-    <input id="addr1" type="text" />
-    <label>Address Line 2</label>
-    <input id="addr2" type="text" />
-    <label>Postcode</label>
-    <input id="postcode" type="text" />
-    <label>Phone</label>
-    <input id="phone" type="text" />
-    <label>Email</label>
-    <input id="email" type="email" />
-  </div>
+  <table id="workTable">
+    <thead>
+      <tr>
+        <th>Date</th><th>Role</th><th>Festival</th><th>Hours</th><th>Rate</th><th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><input type="date"></td>
+        <td><input></td>
+        <td><input></td>
+        <td><input type="number" class="hours" value="0"></td>
+        <td><input type="number" class="rate" value="0"></td>
+        <td class="lineTotal">0.00</td>
+      </tr>
+      <tr>
+        <td><input type="date"></td>
+        <td><input></td>
+        <td><input></td>
+        <td><input type="number" class="hours" value="0"></td>
+        <td><input type="number" class="rate" value="0"></td>
+        <td class="lineTotal">0.00</td>
+      </tr>
+    </tbody>
+  </table>
 
-  <div class="section">
-    <h3>Invoice Details</h3>
-    <label>Invoice Number</label>
-    <input id="invoiceNum" type="text" />
-    <label>Invoice Date</label>
-    <input id="invoiceDate" type="date" />
-  </div>
+  <p><strong>Total Hours:</strong> <span id="totalHours">0</span></p>
+  <p><strong>Total Amount:</strong> £<span id="totalAmount">0.00</span></p>
 
-  <div class="section">
-    <h3>Line Items</h3>
-    <table id="lineItems">
-      <thead>
-        <tr>
-          <th>Description</th>
-          <th>Qty</th>
-          <th>Rate (£)</th>
-          <th>Total (£)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><input placeholder="Description" /></td>
-          <td><input type="number" value="1" /></td>
-          <td><input type="number" value="0" /></td>
-          <td class="right">£0.00</td>
-        </tr>
-      </tbody>
-    </table>
-    <button onclick="addRow()">+ Add Item</button>
-  </div>
+  <h3>Payment Details</h3>
+  <label>Payment Method</label>
+  <input id="paymentMethod" value="BACS">
+  <label>Bank</label>
+  <input id="bankName" value="BANK NAME">
 
-  <div class="section totals">
-    Total: <span id="total">£0.00</span>
-  </div>
+  <button onclick="generatePDF()">Download PDF</button>
 
-  <div class="footer">
-    <label>Additional Notes</label>
-    <textarea placeholder="Payment terms, VAT details, bank info, etc." rows="4"></textarea>
-  </div>
-</div>
-
-<div style="text-align:center;">
-  <button onclick="downloadPDF()">Download PDF</button>
-</div>
-
-<script>
-  function addRow() {
-    const tbody = document.querySelector("#lineItems tbody");
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td><input placeholder="Description" /></td>
-      <td><input type="number" value="1" /></td>
-      <td><input type="number" value="0" /></td>
-      <td class="right">£0.00</td>`;
-    tbody.appendChild(row);
-    attachListeners();
-  }
-
-  function attachListeners() {
-    document.querySelectorAll("#lineItems tbody tr").forEach(row => {
-      row.querySelectorAll("input").forEach(input => {
-        input.addEventListener("input", updateTotals);
+  <script>
+    function recalculate() {
+      let totalHours = 0;
+      let totalAmount = 0;
+      document.querySelectorAll("#workTable tbody tr").forEach(row => {
+        const hours = parseFloat(row.querySelector(".hours").value) || 0;
+        const rate = parseFloat(row.querySelector(".rate").value) || 0;
+        const lineTotal = hours * rate;
+        row.querySelector(".lineTotal").innerText = lineTotal.toFixed(2);
+        totalHours += hours;
+        totalAmount += lineTotal;
       });
+      document.getElementById("totalHours").innerText = totalHours;
+      document.getElementById("totalAmount").innerText = totalAmount.toFixed(2);
+    }
+    document.querySelectorAll(".hours, .rate").forEach(input => {
+      input.addEventListener("input", recalculate);
     });
-  }
+    recalculate();
 
-  function updateTotals() {
-    let total = 0;
-    document.querySelectorAll("#lineItems tbody tr").forEach(row => {
-      const qty = parseFloat(row.cells[1].querySelector("input").value) || 0;
-      const rate = parseFloat(row.cells[2].querySelector("input").value) || 0;
-      const lineTotal = qty * rate;
-      row.cells[3].innerText = `£${lineTotal.toFixed(2)}`;
-      total += lineTotal;
-    });
-    document.getElementById("total").innerText = `£${total.toFixed(2)}`;
-  }
-
-  function downloadPDF() {
-    updateTotals();
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF("p", "pt", "a4");
-    doc.html(document.querySelector("#invoice"), {
-      callback: function (pdf) {
-        pdf.save("SpecSec_Invoice.pdf");
-      },
-      margin: [20, 20, 20, 20],
-      autoPaging: 'text',
-      x: 10,
-      y: 10,
-      width: 575
-    });
-  }
-
-  attachListeners();
-</script>
-
+    async function generatePDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF('p', 'pt', 'a4');
+      await html2canvas(document.body).then(canvas => {
+        const imgData = canvas.toDataURL("image/png");
+        const imgProps = doc.getImageProperties(imgData);
+        const pdfWidth = doc.internal.pageSize.getWidth();
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        doc.save("specsec_invoice.pdf");
+      });
+    }
+  </script>
 </body>
 </html>
