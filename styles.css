@@ -1,0 +1,17 @@
+body { font-family: Arial, sans-serif; margin: 40px; background: #f9f9f9; }
+h2 { text-align: center; margin-bottom: 5px; }
+.subheader { text-align: center; font-size: 14px; color: #555; margin-bottom: 20px; }
+.invoice-box { background: #fff; padding: 30px; border: 1px solid #ccc; max-width: 800px; margin: auto; }
+.flex { display: flex; justify-content: space-between; }
+table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+table, th, td { border: 1px solid #ccc; }
+th, td { padding: 10px; text-align: left; }
+.total-row { font-weight: bold; }
+button { margin-top: 20px; padding: 10px 20px; font-size: 16px; cursor: pointer; }
+input, select { width: 100%; border: none; background: transparent; font-size: 14px; }
+input:focus { outline: none; }
+.error { border: 1px solid red !important; }
+#currency { width: auto; background: #eee; border-radius: 4px; padding: 2px 8px; }
+@media (max-width: 768px) {
+  table { display: block; overflow-x: auto; white-space: nowrap; }
+}
