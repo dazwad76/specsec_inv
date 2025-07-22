@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Invoice Generator</title>
+  <title>Invoice - Specialized Security</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
     body { font-family: Arial, sans-serif; margin: 40px; background: #f9f9f9; }
-    h2 { text-align: center; }
+    h2 { text-align: center; margin-bottom: 5px; }
+    .date { text-align: center; font-size: 14px; color: #555; margin-bottom: 20px; }
     .invoice-box { background: #fff; padding: 30px; border: 1px solid #ccc; max-width: 800px; margin: auto; }
     .flex { display: flex; justify-content: space-between; }
     table { width: 100%; border-collapse: collapse; margin-top: 20px; }
@@ -22,13 +23,17 @@
 
 <div class="invoice-box" id="invoice">
   <h2>Invoice</h2>
-  
+  <div class="date" id="invoice-date"></div>
+
   <div class="flex">
     <div>
       <strong>From:</strong><br>
-      <input value="Your Company Name"><br>
-      <input value="123 Street"><br>
-      <input value="City, Country"><br>
+      <input value="Specialized Security"><br>
+      <input value="3 Lindsay Square"><br>
+      <input value="Livingston"><br>
+      <input value="EH54 8RL"><br>
+      <input value="01506 249001"><br>
+      <input value="military@specializedsecurity.co.uk"><br>
     </div>
     <div>
       <strong>To:</strong><br>
@@ -53,14 +58,14 @@
         <td><input value="Service A"></td>
         <td><input type="number" value="1" oninput="updateTotals()"></td>
         <td><input type="number" value="100" oninput="updateTotals()"></td>
-        <td class="amount">100</td>
+        <td class="amount">100.00</td>
         <td><button onclick="removeRow(this)">✖</button></td>
       </tr>
     </tbody>
     <tfoot>
       <tr class="total-row">
         <td colspan="3">Total</td>
-        <td id="total">100</td>
+        <td id="total">100.00</td>
         <td></td>
       </tr>
     </tfoot>
@@ -107,7 +112,15 @@
     html2pdf().from(invoice).save('invoice.pdf');
   }
 
-  // Initial calculation
+  function setDate() {
+    const dateEl = document.getElementById('invoice-date');
+    const today = new Date();
+    const formatted = today.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
+    dateEl.textContent = `Date: ${formatted}`;
+  }
+
+  // Initial setup
+  setDate();
   updateTotals();
 </script>
 
