@@ -7,7 +7,7 @@
   <style>
     body { font-family: Arial, sans-serif; margin: 40px; background: #f9f9f9; }
     h2 { text-align: center; margin-bottom: 5px; }
-    .date { text-align: center; font-size: 14px; color: #555; margin-bottom: 20px; }
+    .subheader { text-align: center; font-size: 14px; color: #555; margin-bottom: 20px; }
     .invoice-box { background: #fff; padding: 30px; border: 1px solid #ccc; max-width: 800px; margin: auto; }
     .flex { display: flex; justify-content: space-between; }
     table { width: 100%; border-collapse: collapse; margin-top: 20px; }
@@ -23,11 +23,19 @@
 
 <div class="invoice-box" id="invoice">
   <h2>Invoice</h2>
-  <div class="date" id="invoice-date"></div>
+  <div class="subheader">
+    <span id="invoice-date"></span> • <span id="invoice-number"></span>
+  </div>
 
   <div class="flex">
     <div>
       <strong>From:</strong><br>
+      <input value="Client Name"><br>
+      <input value="456 Avenue"><br>
+      <input value="City, Country"><br>
+    </div>
+    <div>
+      <strong>To:</strong><br>
       <input value="Specialized Security"><br>
       <input value="3 Lindsay Square"><br>
       <input value="Livingston"><br>
@@ -35,20 +43,14 @@
       <input value="01506 249001"><br>
       <input value="military@specializedsecurity.co.uk"><br>
     </div>
-    <div>
-      <strong>To:</strong><br>
-      <input value="Client Name"><br>
-      <input value="456 Avenue"><br>
-      <input value="City, Country"><br>
-    </div>
   </div>
 
   <table id="invoice-table">
     <thead>
       <tr>
-        <th>Description</th>
-        <th>Qty</th>
-        <th>Unit Price</th>
+        <th>Festival</th>
+        <th>Hours</th>
+        <th>Rate</th>
         <th>Amount</th>
         <th></th>
       </tr>
@@ -112,15 +114,24 @@
     html2pdf().from(invoice).save('invoice.pdf');
   }
 
-  function setDate() {
+  function setDateAndInvoiceNumber() {
     const dateEl = document.getElementById('invoice-date');
+    const numberEl = document.getElementById('invoice-number');
     const today = new Date();
-    const formatted = today.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
-    dateEl.textContent = `Date: ${formatted}`;
+
+    const formattedDate = today.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
+    dateEl.textContent = `Date: ${formattedDate}`;
+
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    const invoiceNumber = `Invoice #: ${yyyy}${mm}${dd}-001`;
+
+    numberEl.textContent = invoiceNumber;
   }
 
   // Initial setup
-  setDate();
+  setDateAndInvoiceNumber();
   updateTotals();
 </script>
 
