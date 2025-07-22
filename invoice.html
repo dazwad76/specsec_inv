@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SpecSec Invoice Generator</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8f9fa;
+      padding: 30px;
+    }
+    .invoice-box {
+      max-width: 850px;
+      margin: auto;
+      background: white;
+      padding: 40px;
+      border: 1px solid #eee;
+      box-shadow: 0 0 10px rgba(0,0,0,.15);
+      color: #333;
+    }
+    h1, h2, h3 { margin: 0 0 10px; }
+    h1 { font-size: 26px; }
+    .header {
+      text-align: right;
+      margin-bottom: 30px;
+    }
+    .header small {
+      display: block;
+      font-size: 14px;
+      color: #777;
+    }
+    .section { margin-bottom: 30px; }
+    label {
+      display: block;
+      margin: 8px 0 3px;
+      font-weight: 600;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 6px 10px;
+      font-size: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    table th {
+      background: #f0f0f0;
+      text-align: left;
+      padding: 8px;
+      border: 1px solid #ccc;
+    }
+    table td {
+      padding: 8px;
+      border: 1px solid #ccc;
+    }
+    .right { text-align: right; }
+    .totals {
+      text-align: right;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 20px;
+      cursor: pointer;
+      background: #333;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+    .footer {
+      font-size: 14px;
+      color: #666;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="invoice-box" id="invoice">
+  <div class="header">
+    <h1>Specialized Security</h1>
+    <small>3 Lindsay Square, Livingston, EH54 8RL</small>
+    <small>military@specializedsecurity.co.uk</small>
+    <small>01506 249001</small>
+  </div>
+
+  <h2 style="text-align:center;">INVOICE</h2>
+
+  <div class="section">
+    <h3>Client Information</h3>
+    <label>Client Name</label>
+    <input id="clientName" type="text" />
+    <label>Address Line 1</label>
+    <input id="addr1" type="text" />
+    <label>Address Line 2</label>
+    <input id="addr2" type="text" />
+    <label>Postcode</label>
+    <input id="postcode" type="text" />
+    <label>Phone</label>
+    <input id="phone" type="text" />
+    <label>Email</label>
+    <input id="email" type="email" />
+  </div>
+
+  <div class="section">
+    <h3>Invoice Details</h3>
+    <label>Invoice Number</label>
+    <input id="invoiceNum" type="text" />
+    <label>Invoice Date</label>
+    <input id="invoiceDate" type="date" />
+  </div>
+
+  <div class="section">
+    <h3>Line Items</h3>
+    <table id="lineItems">
+      <thead>
+        <tr>
+          <th>Description</th>
+          <th>Qty</th>
+          <th>Rate (£)</th>
+          <th>Total (£)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input placeholder="Description" /></td>
+          <td><input type="number" value="1" /></td>
+          <td><input type="number" value="0" /></td>
+          <td class="right">£0.00</td>
+        </tr>
+      </tbody>
+    </table>
+    <button onclick="addRow()">+ Add Item</button>
+  </div>
+
+  <div class="section totals">
+    Total: <span id="total">£0.00</span>
+  </div>
+
+  <div class="footer">
+    <label>Additional Notes</label>
+    <textarea placeholder="Payment terms, VAT details, bank info, etc." rows="4"></textarea>
+  </div>
+</div>
+
+<div style="text-align:center;">
+  <button onclick="downloadPDF()">Download PDF</button>
+</div>
+
+<script>
+  function addRow() {
+    const tbody = document.querySelector("#lineItems tbody");
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td><input placeholder="Description" /></td>
+      <td><input type="number" value="1" /></td>
+      <td><input type="number" value="0" /></td>
+      <td class="right">£0.00</td>`;
+    tbody.appendChild(row);
+    attachListeners();
+  }
+
+  function attachListeners() {
+    document.querySelectorAll("#lineItems tbody tr").forEach(row => {
+      row.querySelectorAll("input").forEach(input => {
+        input.addEventListener("input", updateTotals);
+      });
+    });
+  }
+
+  function updateTotals() {
+    let total = 0;
+    document.querySelectorAll("#lineItems tbody tr").forEach(row => {
+      const qty = parseFloat(row.cells[1].querySelector("input").value) || 0;
+      const rate = parseFloat(row.cells[2].querySelector("input").value) || 0;
+      const lineTotal = qty * rate;
+      row.cells[3].innerText = `£${lineTotal.toFixed(2)}`;
+      total += lineTotal;
+    });
+    document.getElementById("total").innerText = `£${total.toFixed(2)}`;
+  }
+
+  function downloadPDF() {
+    updateTotals();
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF("p", "pt", "a4");
+    doc.html(document.querySelector("#invoice"), {
+      callback: function (pdf) {
+        pdf.save("SpecSec_Invoice.pdf");
+      },
+      margin: [20, 20, 20, 20],
+      autoPaging: 'text',
+      x: 10,
+      y: 10,
+      width: 575
+    });
+  }
+
+  attachListeners();
+</script>
+
+</body>
+</html>
