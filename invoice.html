@@ -25,7 +25,7 @@
           <input type="text" id="from-address" placeholder="Enter address line 1" required>
           <input type="text" id="from-city" placeholder="Enter city" required>
           <input type="text" id="from-postcode" placeholder="Enter postcode" required>
-          <input type="tel" id="from-phone" placeholder="Enter phone number"> required>
+          <input type="tel" id="from-phone" placeholder="Enter phone number" required>
           <input type="email" id="from-email" placeholder="Enter your email address" required pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$">
         </div>
         <div>
@@ -40,11 +40,8 @@
       </section>
       <section style="margin-top: 30px;">
         <strong>Bank Details:</strong><br><br>
-        <label for="bank-name">Bank Name:</label>
         <input type="text" id="bank-name" placeholder="Your Bank Name" required>
-        <label for="sort-code">Sort Code:</label>
         <input type="text" id="sort-code" placeholder="Sort Code (00-00-00)" required pattern="^\d{2}-\d{2}-\d{2}$">
-        <label for="account-number">Account Number:</label>
         <input type="text" id="account-number" placeholder="Account Number (8 digits)" required pattern="^\d{8}$">
       </section>
       <section style="margin: 20px 0;">
