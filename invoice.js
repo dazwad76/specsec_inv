@@ -17,9 +17,9 @@ function setRoleRate(row) {
   const rateInput = row.querySelector('.rate-input');
   if (!roleSelect || !rateInput) return;
   switch (roleSelect.value) {
-    case 'Steward': rateInput.value = £13.68; break;
-    case 'SIA Steward': rateInput.value = £14.50; break;
-    case 'SIA Team Leader': rateInput.value = £16.00; break;
+    case 'Steward': rateInput.value = 13.68; break;
+    case 'SIA Steward': rateInput.value = 14.50; break;
+    case 'SIA Team Leader': rateInput.value = 16.00; break;
     default: rateInput.value = '';
   }
   updateTotals();
@@ -61,8 +61,8 @@ function addRow() {
       </select>
     </td>
     <td><input type="number" min="1" value="1" class="hours-input" required></td>
-    <td><input type="number" min="0" value="£13.68" class="rate-input" required></td>
-    <td class="amount">£13.68</td>
+    <td><input type="number" min="0" value="13.68" class="rate-input" required></td>
+    <td class="amount">13.68</td>
     <td><button type="button" class="remove-row" aria-label="Remove row">✖</button></td>
   `;
   tbody.appendChild(row);
