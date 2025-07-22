@@ -1,120 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>SpecSec Invoice</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <meta charset="UTF-8">
+  <title>Invoice Generator</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; margin: 40px; max-width: 900px; }
-    .row { display: flex; justify-content: space-between; }
-    .column { flex: 1; padding: 10px; }
-    input, textarea { width: 100%; padding: 6px; margin-top: 4px; margin-bottom: 12px; font-size: 14px; }
+    body { font-family: Arial, sans-serif; margin: 40px; background: #f9f9f9; }
+    h2 { text-align: center; }
+    .invoice-box { background: #fff; padding: 30px; border: 1px solid #ccc; max-width: 800px; margin: auto; }
+    .flex { display: flex; justify-content: space-between; }
     table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { border: 1px solid #aaa; padding: 8px; text-align: left; }
-    button { margin-top: 20px; padding: 10px 15px; font-size: 16px; }
-    h2, h3 { margin-top: 0; }
+    table, th, td { border: 1px solid #ccc; }
+    th, td { padding: 10px; text-align: left; }
+    .total-row { font-weight: bold; }
+    button { margin-top: 20px; padding: 10px 20px; font-size: 16px; cursor: pointer; }
+    input { width: 100%; border: none; background: transparent; font-size: 14px; }
+    input:focus { outline: none; }
   </style>
 </head>
 <body>
-  <h2>SpecSec Invoice</h2>
 
-  <div class="row">
-    <div class="column">
-      <label>Your Company Name</label>
-      <input id="companyName" value="NAME AS APPEARS ON BANK STATEMENT">
-      <input id="address1" value="ADDRESS LINE 1">
-      <input id="address2" value="ADDRESS LINE 2">
-      <input id="address3" value="ADDRESS LINE 3">
-      <input id="postcode" value="POST CODE">
-      <input id="phone" value="TELEPHONE NUMBER">
-      <input id="email" value="EMAIL ADDRESS">
+<div class="invoice-box" id="invoice">
+  <h2>Invoice</h2>
+  
+  <div class="flex">
+    <div>
+      <strong>From:</strong><br>
+      <input value="Your Company Name"><br>
+      <input value="123 Street"><br>
+      <input value="City, Country"><br>
     </div>
-    <div class="column">
-      <label>Invoice #</label>
-      <input id="invoiceNumber" value="INV-001">
-      <label>Invoice Date</label>
-      <input id="invoiceDate" type="date" value="2025-07-22">
+    <div>
+      <strong>To:</strong><br>
+      <input value="Client Name"><br>
+      <input value="456 Avenue"><br>
+      <input value="City, Country"><br>
     </div>
   </div>
 
-  <h3>Billed To</h3>
-  <input id="clientName" value="Specialized Security">
-  <input id="clientAddress1" value="3 Lindsay Square">
-  <input id="clientAddress2" value="Livingston">
-  <input id="clientPostcode" value="EH54 8RL">
-  <input id="clientPhone" value="01506 249001">
-  <input id="clientEmail" value="military@specializedsecurity.co.uk">
-
-  <table id="workTable">
+  <table id="invoice-table">
     <thead>
       <tr>
-        <th>Date</th><th>Role</th><th>Festival</th><th>Hours</th><th>Rate</th><th>Total</th>
+        <th>Description</th>
+        <th>Qty</th>
+        <th>Unit Price</th>
+        <th>Amount</th>
+        <th></th>
       </tr>
     </thead>
-    <tbody>
+    <tbody id="items">
       <tr>
-        <td><input type="date"></td>
-        <td><input></td>
-        <td><input></td>
-        <td><input type="number" class="hours" value="0"></td>
-        <td><input type="number" class="rate" value="0"></td>
-        <td class="lineTotal">0.00</td>
-      </tr>
-      <tr>
-        <td><input type="date"></td>
-        <td><input></td>
-        <td><input></td>
-        <td><input type="number" class="hours" value="0"></td>
-        <td><input type="number" class="rate" value="0"></td>
-        <td class="lineTotal">0.00</td>
+        <td><input value="Service A"></td>
+        <td><input type="number" value="1" oninput="updateTotals()"></td>
+        <td><input type="number" value="100" oninput="updateTotals()"></td>
+        <td class="amount">100</td>
+        <td><button onclick="removeRow(this)">✖</button></td>
       </tr>
     </tbody>
+    <tfoot>
+      <tr class="total-row">
+        <td colspan="3">Total</td>
+        <td id="total">100</td>
+        <td></td>
+      </tr>
+    </tfoot>
   </table>
 
-  <p><strong>Total Hours:</strong> <span id="totalHours">0</span></p>
-  <p><strong>Total Amount:</strong> £<span id="totalAmount">0.00</span></p>
+  <button onclick="addRow()">+ Add Item</button>
+  <button onclick="downloadPDF()">Download PDF</button>
+</div>
 
-  <h3>Payment Details</h3>
-  <label>Payment Method</label>
-  <input id="paymentMethod" value="BACS">
-  <label>Bank</label>
-  <input id="bankName" value="BANK NAME">
-
-  <button onclick="generatePDF()">Download PDF</button>
-
-  <script>
-    function recalculate() {
-      let totalHours = 0;
-      let totalAmount = 0;
-      document.querySelectorAll("#workTable tbody tr").forEach(row => {
-        const hours = parseFloat(row.querySelector(".hours").value) || 0;
-        const rate = parseFloat(row.querySelector(".rate").value) || 0;
-        const lineTotal = hours * rate;
-        row.querySelector(".lineTotal").innerText = lineTotal.toFixed(2);
-        totalHours += hours;
-        totalAmount += lineTotal;
-      });
-      document.getElementById("totalHours").innerText = totalHours;
-      document.getElementById("totalAmount").innerText = totalAmount.toFixed(2);
-    }
-    document.querySelectorAll(".hours, .rate").forEach(input => {
-      input.addEventListener("input", recalculate);
+<script>
+  function updateTotals() {
+    const rows = document.querySelectorAll('#items tr');
+    let total = 0;
+    rows.forEach(row => {
+      const qty = row.cells[1].querySelector('input').valueAsNumber || 0;
+      const price = row.cells[2].querySelector('input').valueAsNumber || 0;
+      const amount = qty * price;
+      row.cells[3].innerText = amount.toFixed(2);
+      total += amount;
     });
-    recalculate();
+    document.getElementById('total').innerText = total.toFixed(2);
+  }
 
-    async function generatePDF() {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF('p', 'pt', 'a4');
-      await html2canvas(document.body).then(canvas => {
-        const imgData = canvas.toDataURL("image/png");
-        const imgProps = doc.getImageProperties(imgData);
-        const pdfWidth = doc.internal.pageSize.getWidth();
-        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-        doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-        doc.save("specsec_invoice.pdf");
-      });
-    }
-  </script>
+  function addRow() {
+    const tbody = document.getElementById('items');
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td><input value="New Item"></td>
+      <td><input type="number" value="1" oninput="updateTotals()"></td>
+      <td><input type="number" value="0" oninput="updateTotals()"></td>
+      <td class="amount">0.00</td>
+      <td><button onclick="removeRow(this)">✖</button></td>
+    `;
+    tbody.appendChild(row);
+  }
+
+  function removeRow(btn) {
+    btn.closest('tr').remove();
+    updateTotals();
+  }
+
+  function downloadPDF() {
+    const invoice = document.getElementById('invoice');
+    html2pdf().from(invoice).save('invoice.pdf');
+  }
+
+  // Initial calculation
+  updateTotals();
+</script>
+
 </body>
 </html>
