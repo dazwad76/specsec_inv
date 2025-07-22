@@ -70,6 +70,7 @@
     <thead>
       <tr>
         <th>Festival</th>
+        <th>Role</th>
         <th>Hours</th>
         <th>Rate</th>
         <th>Amount</th>
@@ -90,6 +91,11 @@
   </select>
   <input type="text" class="other-festival" style="display:none; margin-top:5px;" placeholder="Please specify..." />
 </td>
+                <select name="role">
+          <option value="Steward">Steward</option>
+          <option value="SIA Steward">SIA Steward</option>
+          <option value="SIA Team Leader">SIA Team Leader</option>
+        </select>
         </td>
         <td><input type="number" value="1" oninput="updateTotals()"></td>
         <td><input type="number" value="100" oninput="updateTotals()"></td>
@@ -169,6 +175,12 @@
   </select>
   <input type="text" class="other-festival" style="display:none; margin-top:5px;" placeholder="Please specify..." />
 </td>
+                <select name="role">
+          <option value="Steward">Steward</option>
+          <option value="SIA Steward">SIA Steward</option>
+          <option value="SIA Team Leader">SIA Team Leader</option>
+        </select>
+        </td>
       <td><input type="number" value="1" oninput="updateTotals()"></td>
       <td><input type="number" value="0" oninput="updateTotals()"></td>
       <td class="amount">0.00</td>
