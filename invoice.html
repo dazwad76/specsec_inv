@@ -21,17 +21,11 @@
       <section class="flex" aria-label="Address Section">
         <div>
           <strong>From:</strong><br>
-          <label for="from-name">Name:</label>
           <input type="text" id="from-name" placeholder="Name as appears on bank statement" required>
-          <label for="from-address">Address:</label>
           <input type="text" id="from-address" placeholder="Enter address line 1" required>
-          <label for="from-city">City:</label>
           <input type="text" id="from-city" placeholder="Enter city" required>
-          <label for="from-postcode">Postcode:</label>
           <input type="text" id="from-postcode" placeholder="Enter postcode" required>
-          <label for="from-phone">Phone:</label>
-          <input type="tel" id="from-phone" placeholder="Enter phone number">
-          <label for="from-email">Email:</label>
+          <input type="tel" id="from-phone" placeholder="Enter phone number"> required>
           <input type="email" id="from-email" placeholder="Enter your email address" required pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$">
         </div>
         <div>
@@ -95,15 +89,15 @@
                 </select>
               </td>
               <td><input type="number" min="1" value="1" class="hours-input" required></td>
-              <td><input type="number" min="0" value="13.68" class="rate-input" required></td>
-              <td class="amount">13.68</td>
+              <td><input type="number" min="0" value="£13.68" class="rate-input" required></td>
+              <td class="amount">£13.68</td>
               <td><button type="button" class="remove-row" aria-label="Remove row">✖</button></td>
             </tr>
           </tbody>
           <tfoot>
             <tr class="total-row">
               <td colspan="4">Total</td>
-              <td id="total">13.68</td>
+              <td id="total">£13.68</td>
               <td></td>
             </tr>
           </tfoot>
