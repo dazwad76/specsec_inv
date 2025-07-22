@@ -79,14 +79,17 @@
     <tbody id="items">
       <tr>
         <td>
-          <select>
-            <option>GLASTONBURY</option>
-            <option>FINSBURY PARK</option>
-            <option>WIRELESS</option>
-            <option>LATTITUDE</option>
-            <option>READING</option>
-            <option>OTHER</option>  
-          </select>
+<td>
+  <select onchange="handleOtherFestival(this)">
+    <option>GLASTONBURY</option>
+    <option>FINSBURY PARK</option>
+    <option>WIRELESS</option>
+    <option>LATTITUDE</option>
+    <option>READING</option>
+    <option>OTHER</option>  
+  </select>
+  <input type="text" class="other-festival" style="display:none; margin-top:5px;" placeholder="Please specify..." />
+</td>
         </td>
         <td><input type="number" value="1" oninput="updateTotals()"></td>
         <td><input type="number" value="100" oninput="updateTotals()"></td>
@@ -155,16 +158,17 @@
     const tbody = document.getElementById('items');
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td>
-        <select>
-            <option>GLASTONBURY</option>
-            <option>FINSBURY PARK</option>
-            <option>WIRELESS</option>
-            <option>LATTITUDE</option>
-            <option>READING</option>
-            <option>OTHER</option>  
-        </select>
-      </td>
+<td>
+  <select onchange="handleOtherFestival(this)">
+    <option>GLASTONBURY</option>
+    <option>FINSBURY PARK</option>
+    <option>WIRELESS</option>
+    <option>LATTITUDE</option>
+    <option>READING</option>
+    <option>OTHER</option>  
+  </select>
+  <input type="text" class="other-festival" style="display:none; margin-top:5px;" placeholder="Please specify..." />
+</td>
       <td><input type="number" value="1" oninput="updateTotals()"></td>
       <td><input type="number" value="0" oninput="updateTotals()"></td>
       <td class="amount">0.00</td>
