@@ -54,6 +54,7 @@ function addRow() {
     </td>
     <td>
       <select name="role" class="role-select">
+        <option value="" disabled selected>Select Role</option>
         <option value="Steward">Steward</option>
         <option value="SIA Steward">SIA Steward</option>
         <option value="SIA Team Leader">SIA Team Leader</option>
