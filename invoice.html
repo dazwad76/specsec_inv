@@ -15,8 +15,10 @@
     th, td { padding: 10px; text-align: left; }
     .total-row { font-weight: bold; }
     button { margin-top: 20px; padding: 10px 20px; font-size: 16px; cursor: pointer; }
-    input { width: 100%; border: none; background: transparent; font-size: 14px; }
+    input, select { width: 100%; border: none; background: transparent; font-size: 14px; }
     input:focus { outline: none; }
+    .error { border: 1px solid red !important; }
+    #currency { width: auto; background: #eee; border-radius: 4px; padding: 2px 8px; }
   </style>
 </head>
 <body>
@@ -24,61 +26,71 @@
 <div class="invoice-box" id="invoice">
   <h2>Invoice</h2>
   <div class="subheader">
-    <span id="invoice-date"></span> • <span id="invoice-number"></span>
+    <span id="invoice-date"></span> • 
+    <span id="invoice-number" contenteditable="true"></span>
   </div>
 
   <div class="flex">
-<div>
-  <strong>From:</strong><br>
-  <label>
-    Name<br>
-    <input type="text" value="Name as appears on bank statement" class="editable-input">
-  </label><br><br>
-  <label>
-    Address Line 1<br>
-    <input type="text" value="***" class="editable-input">
-  </label><br><br>
-  <label>
-    City<br>
-    <input type="text" value="***" class="editable-input">
-  </label><br><br>
-  <label>
-    Postcode<br>
-    <input type="text" value="***" class="editable-input">
-  </label><br><br>
-  <label>
-    Phone<br>
-    <input type="text" value="***" class="editable-input">
-  </label><br><br>
-  <label>
-    Email<br>
-    <input type="email" value="***" class="editable-input">
-  </label>
-</div>
+    <div>
+      <strong>From:</strong><br>
+      <label>
+        Name<br>
+        <input type="text" placeholder="Name as appears on bank statement" class="editable-input">
+      </label><br><br>
+      <label>
+        Address Line 1<br>
+        <input type="text" placeholder="Enter address line 1" class="editable-input">
+      </label><br><br>
+      <label>
+        City<br>
+        <input type="text" placeholder="Enter city" class="editable-input">
+      </label><br><br>
+      <label>
+        Postcode<br>
+        <input type="text" placeholder="Enter postcode" class="editable-input">
+      </label><br><br>
+      <label>
+        Phone<br>
+        <input type="text" placeholder="Enter phone number" class="editable-input">
+      </label><br><br>
+      <label>
+        Email<br>
+        <input type="email" placeholder="Enter your email address" class="editable-input">
+      </label>
+    </div>
+    <div>
       <strong>To:</strong><br>
-      <input value="Specialized Security"><br>
-      <input value="3 Lindsay Square"><br>
-      <input value="Livingston"><br>
-      <input value="EH54 8RL"><br>
-      <input value="01506 249001"><br>
-      <input value="military@specializedsecurity.co.uk"><br>
+      <input value="Specialized Security" readonly><br>
+      <input value="3 Lindsay Square" readonly><br>
+      <input value="Livingston" readonly><br>
+      <input value="EH54 8RL" readonly><br>
+      <input value="01506 249001" readonly><br>
+      <input value="military@specializedsecurity.co.uk" readonly><br>
     </div>
   </div>
-<div style="margin-top: 30px;">
-  <strong>Bank Details:</strong><br><br>
-  <label>
-    Bank Name<br>
-    <input type="text" value="Your Bank Name" class="editable-input">
-  </label><br><br>
-  <label>
-    Sort Code<br>
-    <input type="text" value="00-00-00" class="editable-input">
-  </label><br><br>
-  <label>
-    Account Number<br>
-    <input type="text" value="12345678" class="editable-input">
-  </label>
-</div>
+  <div style="margin-top: 30px;">
+    <strong>Bank Details:</strong><br><br>
+    <label>
+      Bank Name<br>
+      <input type="text" placeholder="Your Bank Name" class="editable-input">
+    </label><br><br>
+    <label>
+      Sort Code<br>
+      <input type="text" placeholder="00-00-00" class="editable-input" id="sort-code">
+    </label><br><br>
+    <label>
+      Account Number<br>
+      <input type="text" placeholder="12345678" class="editable-input" id="account-number">
+    </label>
+  </div>
+  <div style="margin: 20px 0;">
+    <label for="currency"><strong>Currency:</strong></label>
+    <select id="currency" onchange="updateTotals()">
+      <option value="£">GBP (£)</option>
+      <option value="$">USD ($)</option>
+      <option value="€">EUR (€)</option>
+    </select>
+  </div>
   <table id="invoice-table">
     <thead>
       <tr>
@@ -91,7 +103,14 @@
     </thead>
     <tbody id="items">
       <tr>
-        <td><input value="Service A"></td>
+        <td>
+          <select>
+            <option>Festival A</option>
+            <option>Festival B</option>
+            <option>Festival C</option>
+            <option>Other</option>
+          </select>
+        </td>
         <td><input type="number" value="1" oninput="updateTotals()"></td>
         <td><input type="number" value="100" oninput="updateTotals()"></td>
         <td class="amount">100.00</td>
@@ -112,30 +131,68 @@
 </div>
 
 <script>
+  function validateInputs() {
+    let valid = true;
+    // Email validation
+    const email = document.querySelector('input[type="email"]');
+    if (email.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+      email.classList.add('error');
+      valid = false;
+    } else {
+      email.classList.remove('error');
+    }
+    // Sort code: 00-00-00
+    const sort = document.getElementById('sort-code');
+    if (sort.value && !/^\d{2}-\d{2}-\d{2}$/.test(sort.value)) {
+      sort.classList.add('error');
+      valid = false;
+    } else {
+      sort.classList.remove('error');
+    }
+    // Account number: 8 digits
+    const acc = document.getElementById('account-number');
+    if (acc.value && !/^\d{8}$/.test(acc.value)) {
+      acc.classList.add('error');
+      valid = false;
+    } else {
+      acc.classList.remove('error');
+    }
+    return valid;
+  }
+
   function updateTotals() {
     const rows = document.querySelectorAll('#items tr');
     let total = 0;
+    const currency = document.getElementById('currency').value;
     rows.forEach(row => {
       const qty = row.cells[1].querySelector('input').valueAsNumber || 0;
       const price = row.cells[2].querySelector('input').valueAsNumber || 0;
       const amount = qty * price;
-      row.cells[3].innerText = amount.toFixed(2);
+      row.cells[3].innerText = currency + amount.toFixed(2);
       total += amount;
     });
-    document.getElementById('total').innerText = total.toFixed(2);
+    document.getElementById('total').innerText = currency + total.toFixed(2);
   }
 
   function addRow() {
     const tbody = document.getElementById('items');
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td><input value="New Item"></td>
+      <td>
+        <select>
+          <option>Festival A</option>
+          <option>Festival B</option>
+          <option>Festival C</option>
+          <option>Other</option>
+        </select>
+      </td>
       <td><input type="number" value="1" oninput="updateTotals()"></td>
       <td><input type="number" value="0" oninput="updateTotals()"></td>
       <td class="amount">0.00</td>
       <td><button onclick="removeRow(this)">✖</button></td>
     `;
     tbody.appendChild(row);
+    updateTotals();
   }
 
   function removeRow(btn) {
@@ -144,6 +201,10 @@
   }
 
   function downloadPDF() {
+    if (!validateInputs()) {
+      alert("Please correct highlighted fields before downloading the invoice.");
+      return;
+    }
     const invoice = document.getElementById('invoice');
     html2pdf().from(invoice).save('invoice.pdf');
   }
