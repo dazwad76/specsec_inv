@@ -115,7 +115,49 @@
   <button onclick="addRow()">+ Add Item</button>
   <button onclick="downloadPDF()">Download PDF</button>
 </div>
+function setRoleRate(row) {
+  const roleSelect = row.querySelector('select[name="role"]');
+  const rateInput = row.querySelector('td:nth-child(5) input');
+  if (!roleSelect || !rateInput) return;
+  switch (roleSelect.value) {
+    case 'Steward':
+      rateInput.value = 13.68;
+      break;
+    case 'SIA Steward':
+      rateInput.value = 14.50;
+      break;
+    case 'SIA Team Leader':
+      rateInput.value = 16.00;
+      break;
+    default:
+      rateInput.value = '';
+  }
+  updateTotals();
+}
 
+// Attach change event to all role selects on page load and when adding rows
+function attachRoleRateListeners() {
+  document.querySelectorAll('select[name="role"]').forEach(sel => {
+    sel.onchange = function() {
+      setRoleRate(sel.closest('tr'));
+    };
+  });
+}
+
+// Modify addRow to re-attach listeners
+const originalAddRow = addRow;
+addRow = function() {
+  originalAddRow();
+  attachRoleRateListeners();
+  // Also set the rate for the newly added row
+  const lastRow = document.querySelector('#items tr:last-child');
+  setRoleRate(lastRow);
+};
+
+// Attach listeners on page load
+attachRoleRateListeners();
+// Set rates for existing rows on page load
+document.querySelectorAll('#items tr').forEach(setRoleRate);
 <script>
   function validateInputs() {
     let valid = true;
