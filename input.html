@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Invoice Input</title>
+</head>
+<body>
+  <h2>Enter Invoice Details</h2>
+  <form id="invoiceForm">
+    <label>Client Name: <input type="text" name="clientName" required></label><br>
+    <label>Date: <input type="date" name="invoiceDate" required></label><br>
+    <label>Amount: <input type="number" name="amount" required></label><br>
+    <!-- Add more fields as needed -->
+    <button type="submit">Create Invoice</button>
+  </form>
+
+  <script>
+    document.getElementById('invoiceForm').onsubmit = function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const params = new URLSearchParams();
+      for (const pair of formData.entries()) {
+        params.append(pair[0], pair[1]);
+      }
+      // Redirect to invoice.html with form data as query parameters
+      window.location.href = 'invoice.html?' + params.toString();
+    };
+  </script>
+</body>
+</html>
