@@ -186,3 +186,26 @@
 <script src="invoice.js"></script>
 </body>
 </html>
+<!-- ... your existing invoice HTML ... -->
+<span id="clientName"></span>
+<span id="invoiceDate"></span>
+<span id="amount"></span>
+<!-- ... -->
+
+<script>
+  function getParams() {
+    const params = new URLSearchParams(window.location.search);
+    return {
+      clientName: params.get('clientName') || '',
+      invoiceDate: params.get('invoiceDate') || '',
+      amount: params.get('amount') || ''
+      // Add more fields as needed
+    };
+  }
+
+  const data = getParams();
+  document.getElementById('clientName').textContent = data.clientName;
+  document.getElementById('invoiceDate').textContent = data.invoiceDate;
+  document.getElementById('amount').textContent = data.amount;
+  // Repeat for other fields
+</script>
