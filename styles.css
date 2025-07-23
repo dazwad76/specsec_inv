@@ -8,7 +8,20 @@ input, select, button {
   width: 100%; /* Full width for easier tapping */
   box-sizing: border-box;
 }
-
+@media print {
+  @page {
+    size: A4;
+    margin: 10mm; /* Adjust as needed */
+  }
+  body {
+    width: 190mm; /* A4 width minus margins */
+    /* Remove unwanted padding/margin from body or main container */
+  }
+  /* Scale content to fit, if necessary */
+  html, body {
+    zoom: 0.95; /* Adjust if content still overflows */
+  }
+}
 /* Responsive design for small screens */
 @media (max-width: 600px) {
   body {
