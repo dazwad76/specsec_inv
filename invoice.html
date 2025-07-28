@@ -1,188 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Invoice - Specialized Security</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- External CSS file: styles.css -->
-  <link rel="stylesheet" href="styles.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <style>
-    /* Base improvements for touch targets and layout */
-    input, select, button {
-      min-height: 44px;
-      padding: 8px 10px;
-      font-size: 1em;
-      border-radius: 6px;
-      margin-bottom: 8px;
-      width: 100%;
-      box-sizing: border-box;
-    }
-    /* Responsive design for small screens */
-    @media (max-width: 600px) {
-      body {
-        font-size: 1.08em;
-        margin: 0;
-        padding: 0;
-        background: #fff;
-      }
-      .invoice-box {
-        padding: 6px;
-        width: 100%;
-        min-width: unset;
-        box-sizing: border-box;
-      }
-      .flex {
-        flex-direction: column !important;
-        gap: 10px;
-      }
-      table {
-        width: 100%;
-        font-size: 0.95em;
-        border-collapse: collapse;
-        overflow-x: auto;
-        display: block;
-      }
-      thead, tfoot {
-        display: none;
-      }
-      tbody, tr, td {
-        display: block;
-        width: 100%;
-      }
-      tr {
-        margin-bottom: 18px;
-        border-bottom: 1px solid #eee;
-      }
-      td {
-        padding: 6px 0;
-        text-align: left;
-        position: relative;
-      }
-      td:before {
-        content: attr(data-label);
-        font-weight: bold;
-        display: block;
-        margin-bottom: 2px;
-        color: #333;
-      }
-      /* Make action buttons full width */
-      .no-print, #add-item, #download-pdf {
-        width: 100%;
-        margin: 8px 0;
-        font-size: 1.1em;
-      }
-    }
-    @media (max-width: 600px) {
-      thead {
-        position: absolute;
-        left: -9999px;
-        top: -9999px;
-      }
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Invoice Generator</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<header>
-  <h2>Invoice</h2>
-  <div class="subheader">
-    <span id="invoice-date"></span> • 
-    <span id="invoice-number" contenteditable="true" aria-label="Invoice Number"></span>
+  <div class="invoice-container">
+    <h1>Invoice</h1>
+    
+    <div>
+      <label>Invoice Number: <span id="invoiceNumber"></span></label><br>
+      <label>Date: <span id="invoiceDate"></span></label>
+    </div>
+
+    <h3>From:</h3>
+    <textarea id="fromDetails">Your Company Name
+Your Address
+Phone
+Email</textarea>
+
+    <h3>To:</h3>
+    <textarea id="toDetails">Client Name
+Client Address
+Client Email</textarea>
+
+    <table id="itemsTable">
+      <thead>
+        <tr>
+          <th>Description</th>
+          <th>Qty</th>
+          <th>Unit Price</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody id="itemsBody">
+        <tr>
+          <td><input type="text" class="desc"></td>
+          <td><input type="number" class="qty" value="1"></td>
+          <td><input type="number" class="price" value="0"></td>
+          <td class="item-total">0.00</td>
+        </tr>
+      </tbody>
+    </table>
+    <button onclick="addItem()">+ Add Item</button>
+    
+    <h3>Total: £<span id="invoiceTotal">0.00</span></h3>
+
+    <button onclick="generatePDF()">Download PDF</button>
   </div>
-</header>
-<main>
-  <div class="invoice-box" id="invoice">
-    <form id="invoice-form" autocomplete="on">
-      <section class="flex" aria-label="Address Section">
-        <div>
-          <strong>From:</strong><br>
-          <input type="text" id="from-name" placeholder="Name as appears on bank statement" required>
-          <input type="text" id="from-address" placeholder="Enter address line 1" required>
-          <input type="text" id="from-city" placeholder="Enter city" required>
-          <input type="text" id="from-postcode" placeholder="Enter postcode" required>
-          <input type="tel" id="from-phone" placeholder="Enter phone number" required>
-          <input type="email" id="from-email" placeholder="Enter your email address" required pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$">
-        </div>
-        <div>
-          <strong>To:</strong><br>
-          <input value="Specialized Security" readonly aria-label="To Name"><br>
-          <input value="3 Lindsay Square" readonly aria-label="To Address"><br>
-          <input value="Livingston" readonly aria-label="To City"><br>
-          <input value="EH54 8RL" readonly aria-label="To Postcode"><br>
-          <input value="01506 249001" readonly aria-label="To Phone"><br>
-          <input value="military@specializedsecurity.co.uk" readonly aria-label="To Email"><br>
-        </div>
-      </section>
-      <section style="margin-top: 30px;">
-        <strong>Bank Details:</strong><br><br>
-        <input type="text" id="bank-name" placeholder="Your Bank Name" required>
-        <input type="text" id="sort-code" placeholder="Sort Code (00-00-00)" required pattern="^\d{2}-\d{2}-\d{2}$">
-        <input type="text" id="account-number" placeholder="Account Number (8 digits)" required pattern="^\d{8}$">
-      </section>
-      <section style="margin: 20px 0;">
-        <label for="currency"><strong>Currency:</strong></label>
-        <select id="currency" name="currency">
-          <option value="£">GBP (£)</option>
-          <option value="$">USD ($)</option>
-          <option value="€">EUR (€)</option>
-        </select>
-      </section>
-      <div style="overflow-x: auto;">
-        <table id="invoice-table">
-          <thead>
-            <tr>
-              <th>Festival</th>
-              <th>Role</th>
-              <th>Hours</th>
-              <th>Rate</th>
-              <th>Amount</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="items">
-            <tr>
-              <td data-label="Festival">
-                <select class="festival-select">
-                  <option value="" disabled selected>Select Festival</option>
-                  <option>Glastonbury</option>
-                  <option>Finsbury Park</option>
-                  <option>Wireless</option>
-                  <option>Lattitude</option>
-                  <option>Reading</option>
-                  <option>Other</option>
-                </select>
-                <input type="text" class="other-festival" style="display:none; margin-top:5px;" placeholder="Please specify..." />
-              </td>
-              <td data-label="Role">
-                <select name="Role" class="role-select">
-                  <option value="" disabled selected>Select Role</option>
-                  <option value="Steward">Steward</option>
-                  <option value="SIA Steward">SIA Steward</option>
-                  <option value="SIA Team Leader">SIA Team Leader</option>
-                </select>
-              </td>
-              <td data-label="Hours"><input type="number" min="1" value="1" class="hours-input" required></td>
-              <td data-label="Rate"><input type="number" min="0" value="0.0" class="rate-input" required></td>
-              <td data-label="Amount" class="amount">0.0</td>
-              <td data-label="Remove"><button type="button" class="remove-row" aria-label="Remove row">✖</button></td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr class="total-row">
-              <td colspan="4">Total</td>
-              <td id="total">0.0</td>
-              <td></td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-      <button type="button" class="no-print" id="add-item">+ Add Item</button>
-      <button type="button" class="no-print" id="download-pdf">Download PDF</button>
-      <span id="pdf-status" aria-live="polite"></span>
-    </form>
-  </div>
-</main>
-<!-- External JS file: invoice.js -->
-<script src="invoice.js"></script>
+
+  <script src="script.js"></script>
 </body>
 </html>
