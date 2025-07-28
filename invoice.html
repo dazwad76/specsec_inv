@@ -2,31 +2,31 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Invoice Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SpecSec Invoice</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="invoice-container">
-    <h1>Invoice</h1>
-    
-    <div>
-      <label>Invoice Number: <span id="invoiceNumber"></span></label><br>
-      <label>Date: <span id="invoiceDate"></span></label>
-    </div>
+  <div class="invoice">
+    <header>
+      <div class="from">
+        <h2>Specialized Security</h2>
+        <p>3 Lindsay Square<br>Livingston<br>EH54 8RL<br>01506 249001<br>military@specializedsecurity.co.uk</p>
+      </div>
+      <div class="invoice-info">
+        <p><strong>Invoice Number:</strong> <span id="invoiceNumber"></span></p>
+        <p><strong>Date:</strong> <span id="invoiceDate"></span></p>
+      </div>
+    </header>
 
-    <h3>From:</h3>
-    <textarea id="fromDetails">Your Company Name
-Your Address
-Phone
-Email</textarea>
-
-    <h3>To:</h3>
-    <textarea id="toDetails">Client Name
+    <section class="to">
+      <h3>Invoice To:</h3>
+      <textarea id="toDetails">Client Name
 Client Address
 Client Email</textarea>
+    </section>
 
-    <table id="itemsTable">
+    <table>
       <thead>
         <tr>
           <th>Description</th>
@@ -35,7 +35,7 @@ Client Email</textarea>
           <th>Total</th>
         </tr>
       </thead>
-      <tbody id="itemsBody">
+      <tbody id="items">
         <tr>
           <td><input type="text" class="desc"></td>
           <td><input type="number" class="qty" value="1"></td>
@@ -45,12 +45,22 @@ Client Email</textarea>
       </tbody>
     </table>
     <button onclick="addItem()">+ Add Item</button>
-    
-    <h3>Total: £<span id="invoiceTotal">0.00</span></h3>
 
-    <button onclick="generatePDF()">Download PDF</button>
+    <section class="bank-details">
+      <h3>Bank Details:</h3>
+      <label>Bank Name: <input type="text" id="bankName"></label>
+      <label>Sort Code: <input type="text" id="sortCode"></label>
+      <label>Account Number: <input type="text" id="accountNumber"></label>
+    </section>
+
+    <div class="total">
+      <h2>Total: £<span id="invoiceTotal">0.00</span></h2>
+    </div>
+
+    <button onclick="downloadPDF()">Download PDF</button>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
