@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SpecSec Invoice</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="invoice">
+    <header>
+      <div class="from">
+        <h2>Specialized Security</h2>
+        <p>3 Lindsay Square<br>Livingston<br>EH54 8RL<br>01506 249001<br>military@specializedsecurity.co.uk</p>
+      </div>
+      <div class="invoice-info">
+        <p><strong>Invoice Number:</strong> <span id="invoiceNumber"></span></p>
+        <p><strong>Date:</strong> <span id="invoiceDate"></span></p>
+      </div>
+    </header>
+
+    <section class="to">
+      <h3>Invoice To:</h3>
+      <textarea id="toDetails">Client Name
+Client Address
+Client Email</textarea>
+    </section>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Description</th>
+          <th>Qty</th>
+          <th>Unit Price</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody id="items">
+        <tr>
+          <td><input type="text" class="desc"></td>
+          <td><input type="number" class="qty" value="1"></td>
+          <td><input type="number" class="price" value="0"></td>
+          <td class="item-total">0.00</td>
+        </tr>
+      </tbody>
+    </table>
+    <button onclick="addItem()">+ Add Item</button>
+
+    <section class="bank-details">
+      <h3>Bank Details:</h3>
+      <label>Bank Name: <input type="text" id="bankName"></label>
+      <label>Sort Code: <input type="text" id="sortCode"></label>
+      <label>Account Number: <input type="text" id="accountNumber"></label>
+    </section>
+
+    <div class="total">
+      <h2>Total: £<span id="invoiceTotal">0.00</span></h2>
+    </div>
+
+    <button onclick="downloadPDF()">Download PDF</button>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
